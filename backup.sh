@@ -38,6 +38,7 @@ not_zero_exit "$?"
 
 gpg2 --output "$TAR_NAME.gpg" --symmetric --batch --yes --passphrase $BACKUP_PASSPHRASE $TAR_NAME
 not_zero_exit "$?"
+rm $TAR_NAME
 
 if [[ $DOW = 'Wednesday' ]]; then
     echo Today is wednsday so upload to google drive
