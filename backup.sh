@@ -10,7 +10,7 @@ source /etc/environment
 function not_zero_exit() {
     EXIT_CODE="$1"
     echo Command exit code was: $EXIT_CODE
-    if [[ "$EXIT_CODE" != 0 ]]; then
+    if [[ "$EXIT_CODE" != 0 && "$EXIT_CODE" != 1 ]]; then
         exit $EXIT_CODE
     fi
 }
@@ -33,7 +33,7 @@ for exluded_dir in ${EXCLUDED_DIRS[@]}; do
     exlude+=" --exclude=$exluded_dir"
 done
 
-tar $exlude -zcvf $TAR_NAME ${DIRS_FOR_BACKUP[*]}
+tar $exlude -zcvvf $TAR_NAME ${DIRS_FOR_BACKUP[*]}
 not_zero_exit "$?"
 
 gpg2 --output "$TAR_NAME.gpg" --symmetric --batch --yes --passphrase $BACKUP_PASSPHRASE $TAR_NAME
