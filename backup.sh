@@ -32,6 +32,7 @@ DIRS_FOR_BACKUP=( \
 )
 EXCLUDED_DIRS=( \
     "$BACKUP_DIR_NAME" \
+    "/home/${USER}/GoogleDrive" \
     "/home/${USER}/Downloads" \
     "/home/${USER}/Desktop" \
     "/home/${USER}/Pictures" \
@@ -68,5 +69,6 @@ rm $TAR_NAME
 
 if [[ "$1" == upload ]]; then
     echo Upload to google drive
-    gdrive upload --parent 1mIDo-TSMYE5OmggQkUi7uY_9qjUwe2RH "$TAR_NAME.gpg"
+#    gdrive upload --parent 1mIDo-TSMYE5OmggQkUi7uY_9qjUwe2RH "$TAR_NAME.gpg"
+    cp ${TAR_NAME}.gpg ~/GoogleDrive/backup-new
 fi
