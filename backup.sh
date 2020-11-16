@@ -22,27 +22,51 @@ if [[ -z "${BACKUP_PASSPHRASE}" ]]; then
 fi
 
 DOW=`date +%A`
-FILE_NAME_PREFIX='alex-new'
-BACKUP_DIR_NAME='/media/alex/tools/backups'
+FILE_NAME_PREFIX=$USER
+BACKUP_DIR_NAME=$HOME/.backups
 TAR_NAME="$BACKUP_DIR_NAME/$FILE_NAME_PREFIX-$DOW.tar"
-DIRS_FOR_BACKUP=("/home/alex" "/usr/local/sbin" "/usr/share/ca-certificates")
-EXCLUDED_DIRS=("/home/alex/Downloads" "/home/alex/.m2" "/home/alex/.cache" "/home/alex/.local/share/Trash" "/home/alex/.gradle")
+DIRS_FOR_BACKUP=( \
+    "/home/$USER" \
+    "/usr/local/sbin" \
+    "/usr/share/ca-certificates" \
+)
+EXCLUDED_DIRS=( \
+    "$BACKUP_DIR_NAME" \
+    "/home/${USER}/Downloads" \
+    "/home/${USER}/Desktop" \
+    "/home/${USER}/Pictures" \
+    "/home/${USER}/Public" \
+    "/home/${USER}/Videos" \
+    "/home/${USER}/Music" \
+    "/home/${USER}/snap" \
+    "/home/${USER}/.npm" \
+    "/home/${USER}/.nvm" \
+    "/home/${USER}/.m2" \
+    "/home/${USER}/.gradle" \
+    "/home/${USER}/.cache" \
+    "/home/${USER}/.local" \
+    "/home/${USER}/.mozilla" \
+    "/home/${USER}/.config" \
+    "/home/${USER}/.java" \
+    "/home/${USER}/.android" \
+    "/home/${USER}/.vim/plugged" \
+    "/usr/share/ca-certificates/mozilla" \
+)
 
 exlude=''
 for exluded_dir in ${EXCLUDED_DIRS[@]}; do
     exlude+=" --exclude=$exluded_dir"
 done
 
-tar $exlude -zcvvf $TAR_NAME ${DIRS_FOR_BACKUP[*]}
+mkdir -p ${BACKUP_DIR_NAME}
+tar $exlude --exclude-vcs --exclude-backups -zcvf $TAR_NAME ${DIRS_FOR_BACKUP[*]}
 not_zero_exit "$?"
 
 gpg2 --output "$TAR_NAME.gpg" --symmetric --batch --yes --passphrase $BACKUP_PASSPHRASE $TAR_NAME
 not_zero_exit "$?"
 rm $TAR_NAME
 
-if [[ $DOW = 'Wednesday' ]]; then
-    echo Today is wednsday so upload to google drive
+if [[ "$1" == upload ]]; then
+    echo Upload to google drive
     gdrive upload --parent 1mIDo-TSMYE5OmggQkUi7uY_9qjUwe2RH "$TAR_NAME.gpg"
-else
-    echo Not a Wednsday so don\'t upload to google drive
 fi
