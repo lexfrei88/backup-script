@@ -7,4 +7,5 @@ sudo apt-get install google-drive-ocamlfuse
 mkdir ~/GoogleDrive
 google-drive-ocamlfuse GoogleDrive/
 ```
-
+* add exclude patterns in `exclude` file. Each in new line. Can use placeholder `{{HOME}}` for user
+  home directory.
